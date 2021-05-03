@@ -1,0 +1,76 @@
+//// -- LEVEL 1
+//// -- Tables and References
+
+// Creating tables
+Table users as U {
+  idUser int [pk, increment] // auto-increment
+  full_name varchar
+  created_at timestamp
+  email email
+}
+
+Table user_settings {
+  idSettings int [pk]
+  userID int
+  lastUpdate timestamp
+  replyAddress email
+  subCustomURL varchar
+  unSubCustomURL varchar
+  customDomain varchar
+ }
+
+// Creating references
+// You can also define relaionship separately
+// > many-to-one; < one-to-many; - one-to-one
+Ref: users.idUser - user_settings.idSettings  
+
+
+//----------------------------------------------//
+
+Table newsletter {
+  idLetter int [pk]
+  newsLetterName varchar
+  newsLetterDesc varchar
+  header varchar
+  footer varchar
+  customCSS varchar
+  webCSS varchar
+  dateFormat varchar
+  tintColor varchar
+  icon varchar
+  created_at datetime [default: `now()`]
+  
+}
+
+Ref: newsletter.idLetter - user_settings.idSettings
+
+Table subscribers {
+  idSub int [pk]
+  subName varchar
+  subscriberEmail email
+  subDate datetime
+  unSubDate datetime
+  created_at datetime [default: `now()`]
+  
+}
+
+Ref: subscribers.idSub > users.idUser
+
+Table emailsSent {
+  idEmailSent int [pk]
+  dateTimeSent datetime
+  created_at datetime [default: `now()`]
+  
+}
+
+Table manyToManyemailsUserSub {
+  idManyToManyemailsUserSub int [pk]
+  idSub int
+  idEmailSent int
+  
+}
+
+Ref: emailsSent.idEmailSent - newsletter.idLetter
+Ref: emailsSent.idEmailSent - users.idUser
+Ref: emailsSent.idEmailSent > manyToManyemailsUserSub.idManyToManyemailsUserSub
+Ref: subscribers.idSub > manyToManyemailsUserSub.idManyToManyemailsUserSub
